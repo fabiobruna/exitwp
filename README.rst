@@ -1,8 +1,8 @@
 ######
-Exitwp
+Exitwp (modified by Boris Smus http//smus.com for Hyde)
 ######
 
-Exitwp is tool for making migration from one or more wordpress blogs to the `jekyll blog engine <https://github.com/mojombo/jekyll/>`_ as easy as possible.
+Exitwp is tool for making migration from one or more wordpress blogs to the `hyde blog engine <https://github.com/mojombo/hyde/>`_ as easy as possible.
 
 By default it will try to convert as much information as possible from wordpress but can also be told to filter the amount of data it converts.
 
@@ -58,7 +58,7 @@ Known issues
 Near future improvements:
  * Target file names are some times less than optimal.
  * Rewriting of image/attachment links if they are downloaded
- * Meaningful translation/filtering of wikipedia publish statuses into something that usable within a fairly standard jekyll setup.
+ * Meaningful translation/filtering of wikipedia publish statuses into something that usable within a fairly standard hyde setup.
 
 Things I want to do to learn writing better python code:
  * Refactor code to use less nesting
@@ -66,4 +66,4 @@ Things I want to do to learn writing better python code:
 
 Things that might be resolved later on if I find the time:
  * There will probably be issues when migrating non utf-8 encoded wordpress dump files (if they exist).
- * Integrate one or a few basic jekyll site templates to render complete working jekyll blog setups from wordpress exports.
+ * Integrate one or a few basic hyde site templates to render complete working hyde blog setups from wordpress exports.
