@@ -17,7 +17,7 @@ from urllib import urlretrieve
 '''
 Import
 
-Tested with Wordpress 3.1 and jekyll master branch from 2011-03-26
+Tested with Wordpress 3.1 and hyde master branch from 2011-03-26
 pandoc is required to be installed if conversion from html will be done.
 
 Havent really coded much python (yet) so the design of this code is a bit messy.
@@ -52,7 +52,7 @@ def html2fmt(html, target_format):
         f=codecs.open('pandoc.in', 'w', encoding='utf-8')
         f.write(html)
         f.close()
-        call(["pandoc","-f","html","-o", "pandoc.out", "-t",target_format, "pandoc.in"])
+        call(["pandoc","--reference-links","-f","html","-o", "pandoc.out", "-t",target_format, "pandoc.in"])
         f=codecs.open('pandoc.out', 'r', encoding='utf-8')
         lines=[]
         for line in f: lines.append(line)
@@ -144,13 +144,13 @@ def parse_wp_xml(file):
     }
 
 
-def write_jekyll(data, target_format):
+def write_hyde(data, target_format):
 
     sys.stdout.write("writing")
     item_uids={}
     attachments={}
 
-    def get_blog_path(data, path_infix='jekyll'):
+    def get_blog_path(data, path_infix='hyde'):
         name=data['header']['link']
         name=re.sub('^https?','',name)
         name=re.sub('[^A-Za-z0-9_.-]','',name)
@@ -201,7 +201,8 @@ def write_jekyll(data, target_format):
         filename_parts=[full_dir,'/']
         filename_parts.append(item['uid'])
         filename_parts.append('.')
-        filename_parts.append(target_format)
+        #filename_parts.append(target_format)
+        filename_parts.append('html')
         return ''.join(filename_parts)
 
     def get_attachment_path(src, dir, dir_prefix='a'):
@@ -241,23 +242,22 @@ def write_jekyll(data, target_format):
         out=None
         yaml_header = {
           'title' : i['title'],
-          'date' : i['date'],
-          'author' : i['author'],
-          'slug' : i['slug'],
-          'status' : i['status'],
-          'wordpress_id' : i['wp_id'],
+          #'author' : i['author'],
+          #'slug' : i['slug'],
+          #'status' : i['status'],
+          #'wordpress_id' : i['wp_id'],
         }
 
         if i['type'] == 'post':
-            i['uid']=get_item_uid(i,date_prefix=True)
+            i['uid']=get_item_uid(i)
             fn=get_item_path(i, dir='_posts')
             out=open_file(fn)
-            yaml_header['layout']='post'
+            #yaml_header['layout']='post'
         elif i['type'] == 'page':
             i['uid']=get_item_uid(i)
             fn=get_item_path(i)
             out=open_file(fn)
-            yaml_header['layout']='page'
+            #yaml_header['layout']='page'
         elif i['type'] in item_type_filter:
             pass
         else:
@@ -271,21 +271,26 @@ def write_jekyll(data, target_format):
 
         if out is not None:
             def toyaml(data):
-                return yaml.safe_dump(data, allow_unicode=True, default_flow_style=False).decode('utf-8')
+                return yaml.safe_dump(data, default_flow_style=False).decode('utf-8')
 
             tax_out={}
             for taxonomy in i['taxanomies']:
                 for tvalue in i['taxanomies'][taxonomy]:
                     t_name=taxonomy_name_mapping.get(taxonomy,taxonomy)
-                    if t_name not in tax_out: tax_out[t_name]=[]
-                    tax_out[t_name].append(tvalue)
+                    if t_name is 'tags':
+                        if t_name not in tax_out: tax_out[t_name]=[]
+                        tax_out[t_name].append(tvalue)
 
-            out.write('---\n')
+            out.write('{% extends "_post.html" %}\n')
+            out.write('{% hyde\n')
             if len(yaml_header)>0: out.write(toyaml(yaml_header))
+            out.write('created: ' + i['date'] + '\n');
             if len(tax_out)>0: out.write(toyaml(tax_out))
+            out.write('%}\n\n')
 
-            out.write('---\n\n')
+            out.write('{% block article %}\n')
             out.write(html2fmt(i['body'], target_format))
+            out.write('{% endblock %}\n')
 
             out.close()
     print "\n"
@@ -294,6 +299,6 @@ def write_jekyll(data, target_format):
 wp_exports=glob(wp_exports+'/*.xml')
 for wpe in wp_exports:
     data=parse_wp_xml(wpe)
-    write_jekyll(data, target_format)
+    write_hyde(data, target_format)
 
 print 'done'
