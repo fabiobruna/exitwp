@@ -34,6 +34,12 @@ Installing python dependencies in ubuntu/debian
 
    ``sudo apt-get install python-yaml python-beautifulsoup``
 
+Installing python package installer (pip)
+------------------------------------------
+
+	``sudo apt-get install python-pip``
+	``sudo pip install --upgrade pip ``
+
 Installing Python dependencies using python package installer (pip)
 -------------------------------------------------------------------
 
