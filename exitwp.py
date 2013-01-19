@@ -32,6 +32,9 @@ Flat is better than nested:
 ######################################################
 # Configration
 ######################################################
+
+print "config"
+
 config=yaml.load(file('config.yaml','r'))
 wp_exports=config['wp_exports']
 build_dir=config['build_dir']
@@ -64,11 +67,11 @@ def html2fmt(html, target_format):
 def parse_wp_xml(file):
     ns = {
         '':'', #this is the default namespace
-        'excerpt':"{http://wordpress.org/export/1.1/excerpt/}",
+        'excerpt':"{http://wordpress.org/export/1.2/excerpt/}",
         'content':"{http://purl.org/rss/1.0/modules/content/}",
         'wfw':"{http://wellformedweb.org/CommentAPI/}",
         'dc':"{http://purl.org/dc/elements/1.1/}",
-        'wp':"{http://wordpress.org/export/1.1/}"
+        'wp':"{http://wordpress.org/export/1.2/}"
     }
 
     tree=ElementTree()
@@ -297,6 +300,7 @@ def write_hyde(data, target_format):
 
 
 wp_exports=glob(wp_exports+'/*.xml')
+
 for wpe in wp_exports:
     data=parse_wp_xml(wpe)
     write_hyde(data, target_format)
