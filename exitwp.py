@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+## or on the command line.!/usr/bin/env python
 
 from xml.etree.ElementTree import ElementTree
 from subprocess import call, PIPE, Popen
@@ -252,10 +252,11 @@ def write_hyde(data, target_format):
         }
 
         if i['type'] == 'post':
+            
             i['uid']=get_item_uid(i)
-            fn=get_item_path(i, dir='_posts')
+            fn=get_item_path(i, dir='_posts/'+i['date'][:4]+'/'+i['date'][5:7])
             out=open_file(fn)
-            #yaml_header['layout']='post'
+            yaml_header['layout']='post'
         elif i['type'] == 'page':
             i['uid']=get_item_uid(i)
             fn=get_item_path(i)
