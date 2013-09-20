@@ -13,22 +13,6 @@ from BeautifulSoup import BeautifulSoup
 from urlparse import urlparse, urljoin
 from urllib import urlretrieve
 
-
-'''
-Import
-
-Tested with Wordpress 3.1 and hyde master branch from 2011-03-26
-pandoc is required to be installed if conversion from html will be done.
-
-Havent really coded much python (yet) so the design of this code is a bit messy.
-
-EAFP:
-   I should do more EAFP to keep the code cleaner, it's even in the python manual glossary.
-
-Flat is better than nested:
-   I seem to nest loops a bit uncarefully, should take greater notice about this.
-
-'''
 ######################################################
 # Configration
 ######################################################
@@ -285,12 +269,13 @@ def write_hyde(data, target_format):
                         if t_name not in tax_out: tax_out[t_name]=[]
                         tax_out[t_name].append(tvalue)
 
-            out.write('{% extends "_post.html" %}\n')
-            out.write('{% hyde\n')
+            out.write('---\n')
+            out.write('extends: blog.j2\n')
+            out.write('default block:\n')
             if len(yaml_header)>0: out.write(toyaml(yaml_header))
             out.write('created: ' + i['date'] + '\n');
+            out.write('---\n')
             if len(tax_out)>0: out.write(toyaml(tax_out))
-            out.write('%}\n\n')
 
             out.write('{% block article %}\n')
             out.write(html2fmt(i['body'], target_format))
