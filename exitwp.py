@@ -97,16 +97,20 @@ def parse_wp_xml(file):
 
             body=gi('content:encoded')
 
-            img_srcs=[]
+            img_srcs=""
             if body is not None:
                 try:
                     soup = BeautifulSoup(body)
                     img_tags=soup.findAll('img')
                     for img in img_tags:
+                      #print img_tags
+                      if not img('src'):
+                        print 'nee'
+                      else:
                         img_srcs.append(img['src'])
                 except:
                     print "could not parse html: " + body
-            #print img_srcs
+            print img_srcs
 
             export_item = {
                 'title' : gi('title'),
@@ -229,7 +233,7 @@ def write_hyde(data, target_format):
         out=None
         yaml_header = {
           'title' : i['title'],
-          #'author' : i['author'],
+          'author' : 'Fabio Bruna',
           #'slug' : i['slug'],
           #'status' : i['status'],
           #'wordpress_id' : i['wp_id'],
